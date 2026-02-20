@@ -1,0 +1,66 @@
+url: https://github.com/zabbonat/ecoflex
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/introduction.html
+    articles:
+      text: Articles
+      menu:
+      - text: Introduction
+        href: articles/introduction.html
+      - text: "---"
+      - text: Model Families
+      - text: Hurdle Models
+        href: articles/hurdle_models.html
+      - text: Heckman Selection
+        href: articles/heckman_selection.html
+      - text: Regression Discontinuity
+        href: articles/rdd.html
+      - text: IV/GMM
+        href: articles/iv_gmm.html
+      - text: Difference-in-Differences
+        href: articles/did.html
+      - text: Tobit Models
+        href: articles/tobit.html
+      - text: Nonlinear Panel
+        href: articles/panel_nonlinear.html
+      - text: Switching Regression
+        href: articles/switching_regression.html
+
+reference:
+- title: Core Models
+  desc: Main estimation functions
+  contents:
+  - hurdle_flex
+  - heckman_flex
+  - rdd_flex
+  - ivgmm_flex
+  - did_flex
+  - tobit_flex
+  - panel_nl
+  - switching_flex
+
+- title: RDD Diagnostics
+  desc: Tools for RDD validation
+  contents:
+  - rdd_manipulation_test
+  - rdd_balance_test
+  - rdd_placebo_cutoffs
+
+- title: DiD Comparison
+  desc: Compare estimators
+  contents:
+  - did_compare
+
+- title: Variance-Covariance
+  desc: Flexible SE computation
+  contents:
+  - flex_vcov

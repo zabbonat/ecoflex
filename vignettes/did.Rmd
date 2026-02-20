@@ -1,0 +1,98 @@
+---
+title: "Difference-in-Differences"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Difference-in-Differences}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  eval = FALSE
+)
+```
+
+## Overview
+
+`did_flex()` estimates difference-in-differences models for staggered
+treatment adoption. It supports classical TWFE and six modern
+heterogeneity-robust estimators.
+
+## Simulated Panel Data
+
+```{r did-data}
+library(ecoflex)
+
+set.seed(42)
+panel <- expand.grid(id = 1:100, time = 1:10)
+panel$cohort <- ifelse(panel$id <= 33, 5,
+                ifelse(panel$id <= 66, 7, Inf))   # never-treated: Inf
+panel$treat  <- as.integer(panel$time >= panel$cohort)
+panel$x      <- rnorm(nrow(panel))
+panel$y      <- 1 + 0.5 * panel$treat + 0.2 * panel$x + rnorm(nrow(panel))
+```
+
+## Two-Way Fixed Effects (TWFE)
+
+```{r did-twfe}
+m_twfe <- did_flex(y ~ x, data = panel,
+                   id_var = "id", time_var = "time", treat_var = "treat",
+                   estimator = "twfe")
+summary(m_twfe)
+```
+
+## Callaway & Sant'Anna (2021)
+
+```{r did-cs}
+m_cs <- did_flex(y ~ x, data = panel,
+                 id_var = "id", time_var = "time", treat_var = "treat",
+                 cohort_var = "cohort",
+                 estimator = "callaway_santanna",
+                 control_group = "nevertreated")
+summary(m_cs)
+```
+
+## Sun & Abraham (2021)
+
+```{r did-sa}
+m_sa <- did_flex(y ~ x, data = panel,
+                 id_var = "id", time_var = "time", treat_var = "treat",
+                 cohort_var = "cohort",
+                 estimator = "sun_abraham")
+summary(m_sa)
+```
+
+## Gardner (2022)
+
+```{r did-gardner}
+m_gardner <- did_flex(y ~ x, data = panel,
+                      id_var = "id", time_var = "time", treat_var = "treat",
+                      estimator = "gardner")
+summary(m_gardner)
+```
+
+## Compare Estimators
+
+```{r did-compare}
+comparison <- did_compare(y ~ x, data = panel,
+                          id_var = "id", time_var = "time", treat_var = "treat",
+                          cohort_var = "cohort")
+print(comparison)
+```
+
+## Event Study Plot
+
+```{r did-plot}
+plot(m_cs)
+```
+
+## LaTeX Output
+
+```{r did-latex}
+to_latex(m_twfe)
+```

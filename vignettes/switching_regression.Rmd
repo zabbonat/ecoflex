@@ -1,0 +1,91 @@
+---
+title: "Switching Regression Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Switching Regression Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+`switching_flex()` estimates regression models where different regimes
+operate for different observations. Three types are supported:
+
+- **Exogenous**: regime membership is observed.
+- **Endogenous** (Maddala): regime membership is endogenous (latent selection).
+- **Markov**: regime is a latent Markov chain.
+
+## Exogenous Switching
+
+```{r switch-exog}
+library(ecoflex)
+
+# mtcars: regimes defined by transmission type (am = 0/1)
+m_exog <- switching_flex(mpg ~ hp + wt, data = mtcars,
+                         type = "exogenous", regime_var = "am")
+summary(m_exog)
+```
+
+## Endogenous Switching (Maddala)
+
+```{r switch-endog}
+set.seed(42)
+n <- 500
+z  <- rnorm(n)
+x  <- rnorm(n)
+s  <- as.integer(0.4 * z + rnorm(n) > 0)
+y  <- ifelse(s == 1, 2 + 1.5 * x, 0.5 + 0.3 * x) + rnorm(n, sd = 0.5)
+df <- data.frame(y = y, x = x, z = z, s = s)
+
+m_endog <- switching_flex(y ~ x, data = df, type = "endogenous")
+summary(m_endog)
+```
+
+## Markov Switching
+
+```{r switch-markov}
+set.seed(123)
+n  <- 300
+x  <- rnorm(n)
+y  <- c(rnorm(150, mean = -1), rnorm(150, mean = 2)) + 0.5 * x
+df_ts <- data.frame(y = y, x = x)
+
+m_markov <- switching_flex(y ~ x, data = df_ts, type = "markov", n_regimes = 2)
+summary(m_markov)
+```
+
+## t-Distributed Errors
+
+```{r switch-t}
+m_t <- switching_flex(mpg ~ hp + wt, data = mtcars,
+                      type = "exogenous", regime_var = "am",
+                      error_dist = "t")
+summary(m_t)
+```
+
+## Predictions
+
+```{r switch-predict}
+pred <- predict(m_exog, type = "response")
+```
+
+## Flexible Standard Errors
+
+```{r switch-vcov}
+V_hc <- flex_vcov(m_exog, type = "HC3")
+```
+
+## LaTeX Output
+
+```{r switch-latex}
+to_latex(m_exog)
+```

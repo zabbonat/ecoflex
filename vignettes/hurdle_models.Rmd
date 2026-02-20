@@ -1,0 +1,115 @@
+---
+title: "Hurdle Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hurdle Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+A hurdle model treats zero outcomes and positive outcomes as arising from
+separate processes. The binary part models whether an observation clears a
+threshold; the count part models the magnitude conditional on clearing it.
+`hurdle_flex()` generalises the standard hurdle by allowing any non-negative
+integer threshold (not just zero).
+
+## Basic Usage
+
+```{r hurdle-basic}
+library(ecoflex)
+
+set.seed(42)
+n <- 1000
+x <- rnorm(n)
+y <- rpois(n, exp(0.5 + 0.3 * x))
+
+df <- data.frame(y = y, x = x)
+
+# Standard hurdle at threshold = 0
+m <- hurdle_flex(y ~ x, data = df, threshold = 0)
+summary(m)
+```
+
+## Arbitrary Threshold
+
+```{r hurdle-threshold}
+# Hurdle at threshold = 5
+m5 <- hurdle_flex(y ~ x, data = df, threshold = 5, dist = "negbin")
+summary(m5)
+
+# Compare thresholds by AIC
+thresholds <- c(0, 2, 5, 10)
+aics <- sapply(thresholds, function(t) {
+  m <- hurdle_flex(y ~ x, data = df, threshold = t)
+  AIC(m)
+})
+data.frame(threshold = thresholds, AIC = aics)
+```
+
+## Count Distributions
+
+```{r hurdle-dist}
+# Negative Binomial count component
+m_nb <- hurdle_flex(y ~ x, data = df, dist = "negbin")
+
+# Geometric count component
+m_geo <- hurdle_flex(y ~ x, data = df, dist = "geometric")
+```
+
+## Separate Formulas for Each Component
+
+```{r hurdle-twopart}
+set.seed(1)
+df2 <- data.frame(
+  y = rpois(500, exp(0.5 + 0.3 * rnorm(500))),
+  x1 = rnorm(500),
+  z  = rnorm(500)
+)
+
+# Different regressors for binary and count parts
+m2 <- hurdle_flex(y ~ x1 | x1 + z, data = df2, threshold = 0)
+summary(m2)
+```
+
+## Two-Step Estimation
+
+```{r hurdle-twostep}
+m_ts <- hurdle_flex(y ~ x, data = df, method = "two-step")
+summary(m_ts)
+```
+
+## Predictions
+
+```{r hurdle-predict}
+# Fitted expected values
+fitted_vals <- predict(m, type = "response")
+
+# Probability of crossing the threshold
+prob_above <- predict(m, type = "prob")
+```
+
+## Flexible Standard Errors
+
+```{r hurdle-vcov}
+# Heteroscedasticity-robust SE
+V_hc <- flex_vcov(m, type = "HC3")
+
+# Bootstrap SE
+V_boot <- flex_vcov(m, type = "bootstrap", R = 500)
+```
+
+## LaTeX Output
+
+```{r hurdle-latex}
+to_latex(m)
+```

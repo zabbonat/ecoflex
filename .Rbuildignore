@@ -1,0 +1,10 @@
+^\.github$
+^docs$
+^_pkgdown\.yml$
+^\.Rproj\.user$
+^LICENSE\.md$
+^README\.Rmd$
+^test_.*$
+^results_.*$
+^summary\.txt$
+^\.agent$

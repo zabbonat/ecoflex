@@ -1,0 +1,97 @@
+---
+title: "Tobit Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tobit Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+`tobit_flex()` estimates censored regression models of Tobit types I through V
+with flexible error distributions (normal, t, logistic) and multiple
+estimation methods including maximum likelihood and censored LAD.
+
+## Type I: Standard Censored Regression
+
+```{r tobit1}
+library(ecoflex)
+
+# mtcars: censor mpg at 15
+m1 <- tobit_flex(mpg ~ hp + wt, data = mtcars,
+                 tobit_type = 1, left = 15)
+summary(m1)
+```
+
+## Double Censoring
+
+```{r tobit1-double}
+m1_dc <- tobit_flex(mpg ~ hp + wt, data = mtcars,
+                    tobit_type = 1, left = 15, right = 30)
+summary(m1_dc)
+```
+
+## Type II: Sample Selection (Tobit II)
+
+```{r tobit2}
+set.seed(42)
+n <- 600
+x1 <- rnorm(n); z <- rnorm(n)
+s  <- as.integer(0.5 * x1 + 0.4 * z + rnorm(n) > 0)
+y  <- ifelse(s == 1, 1 + 2 * x1 + rnorm(n), NA)
+df <- data.frame(y = y, s = s, x1 = x1, z = z)
+
+m2 <- tobit_flex(y | s ~ x1 | x1 + z, data = df, tobit_type = 2)
+summary(m2)
+```
+
+## t-Distributed Errors
+
+```{r tobit-t}
+m_t <- tobit_flex(mpg ~ hp + wt, data = mtcars,
+                  tobit_type = 1, left = 15, error_dist = "t")
+summary(m_t)
+```
+
+## Logistic Errors
+
+```{r tobit-logistic}
+m_logistic <- tobit_flex(mpg ~ hp + wt, data = mtcars,
+                         tobit_type = 1, left = 15, error_dist = "logistic")
+summary(m_logistic)
+```
+
+## Censored LAD (Powell Estimator)
+
+```{r tobit-powell}
+m_lad <- tobit_flex(mpg ~ hp + wt, data = mtcars,
+                    tobit_type = 1, left = 15, method = "powell")
+summary(m_lad)
+```
+
+## Predictions
+
+```{r tobit-predict}
+pred <- predict(m1, type = "response")
+```
+
+## Flexible Standard Errors
+
+```{r tobit-vcov}
+V_hc <- flex_vcov(m1, type = "HC3")
+```
+
+## LaTeX Output
+
+```{r tobit-latex}
+to_latex(m1)
+```

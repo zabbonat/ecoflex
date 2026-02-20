@@ -1,0 +1,83 @@
+---
+title: "Heckman Selection Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Heckman Selection Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+Heckman selection models correct for sample selection bias when outcomes are
+only observed for a non-random subsample. `heckman_flex()` supports multiple
+estimation methods and flexible error distributions.
+
+## Basic Usage
+
+```{r heckman-basic}
+library(ecoflex)
+
+set.seed(42)
+n <- 800
+x1 <- rnorm(n)
+z  <- rnorm(n)                                   # exclusion restriction
+s  <- as.integer(0.3 * x1 + 0.5 * z + rnorm(n) > 0)
+y  <- ifelse(s == 1, 1 + 2 * x1 + rnorm(n), NA)
+
+df <- data.frame(y = y, s = s, x1 = x1, z = z)
+
+# Two-step Heckman
+m <- heckman_flex(y | s ~ x1 | x1 + z, data = df, method = "twostep")
+summary(m)
+```
+
+## Maximum Likelihood Estimation
+
+```{r heckman-ml}
+m_ml <- heckman_flex(y | s ~ x1 | x1 + z, data = df, method = "ml")
+summary(m_ml)
+```
+
+## Lee (Robust Two-Step) Estimator
+
+```{r heckman-lee}
+m_lee <- heckman_flex(y | s ~ x1 | x1 + z, data = df, method = "twostep_robust")
+summary(m_lee)
+```
+
+## t-Distributed Errors
+
+```{r heckman-t}
+m_t <- heckman_flex(y | s ~ x1 | x1 + z, data = df,
+                    method = "ml", error_dist = "t")
+summary(m_t)
+```
+
+## Bootstrap Standard Errors
+
+```{r heckman-boot}
+m_boot <- heckman_flex(y | s ~ x1 | x1 + z, data = df,
+                       method = "twostep", vcov = "bootstrap")
+summary(m_boot)
+```
+
+## Predictions
+
+```{r heckman-predict}
+pred <- predict(m, type = "response")
+```
+
+## LaTeX Output
+
+```{r heckman-latex}
+to_latex(m)
+```

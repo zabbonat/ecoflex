@@ -1,0 +1,102 @@
+---
+title: "Nonlinear Panel Data Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nonlinear Panel Data Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+`panel_nl()` estimates nonlinear panel data models with Poisson, Negative
+Binomial, Logit, Probit, or Gamma distributions. Fixed effects, random
+effects, and correlated random effects (Mundlak/Chamberlain) are supported.
+
+## Simulated Panel Data
+
+```{r panel-data}
+library(ecoflex)
+
+set.seed(42)
+panel <- expand.grid(id = 1:50, time = 1:6)
+panel$x   <- rnorm(nrow(panel))
+panel$y   <- rpois(nrow(panel), exp(0.5 + 0.3 * panel$x))
+panel$y_b <- as.integer(panel$x + rnorm(nrow(panel)) > 0)
+```
+
+## Poisson Fixed Effects
+
+```{r panel-fe-poisson}
+m_fe <- panel_nl(y ~ x, data = panel, id = "id", time = "time",
+                 family = "poisson", model = "fe")
+summary(m_fe)
+```
+
+## Poisson Random Effects
+
+```{r panel-re-poisson}
+m_re <- panel_nl(y ~ x, data = panel, id = "id", time = "time",
+                 family = "poisson", model = "re")
+summary(m_re)
+```
+
+## Correlated Random Effects (Mundlak)
+
+```{r panel-cre}
+m_cre <- panel_nl(y ~ x, data = panel, id = "id", time = "time",
+                  family = "poisson", model = "correlated_re")
+summary(m_cre)
+```
+
+## Negative Binomial
+
+```{r panel-negbin}
+m_nb <- panel_nl(y ~ x, data = panel, id = "id", time = "time",
+                 family = "negbin", model = "fe")
+summary(m_nb)
+```
+
+## Logit Fixed Effects
+
+```{r panel-logit}
+m_logit <- panel_nl(y_b ~ x, data = panel, id = "id", time = "time",
+                    family = "logit", model = "fe")
+summary(m_logit)
+```
+
+## Two-Way Effects
+
+```{r panel-twoways}
+m_tw <- panel_nl(y ~ x, data = panel, id = "id", time = "time",
+                 family = "poisson", model = "fe", effect = "twoways")
+summary(m_tw)
+```
+
+## Cluster-Robust Standard Errors
+
+```{r panel-vcov}
+m_cl <- panel_nl(y ~ x, data = panel, id = "id", time = "time",
+                 family = "poisson", model = "fe", vcov = "cluster")
+summary(m_cl)
+```
+
+## Predictions
+
+```{r panel-predict}
+pred <- predict(m_fe, type = "response")
+```
+
+## LaTeX Output
+
+```{r panel-latex}
+to_latex(m_fe)
+```

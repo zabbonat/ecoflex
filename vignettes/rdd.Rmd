@@ -1,0 +1,90 @@
+---
+title: "Regression Discontinuity Design"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Regression Discontinuity Design}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  eval = FALSE
+)
+```
+
+## Overview
+
+`rdd_flex()` implements sharp and fuzzy regression discontinuity designs
+with local polynomial estimation and MSE-optimal bandwidth selection.
+
+## Sharp RDD
+
+```{r rdd-sharp}
+library(ecoflex)
+
+set.seed(123)
+n  <- 1000
+x  <- runif(n, -1, 1)
+y  <- 1 + 0.5 * x + 2 * (x >= 0) + rnorm(n, sd = 0.5)
+df <- data.frame(y = y, x = x)
+
+m <- rdd_flex(y ~ x, data = df, cutoff = 0, type = "sharp")
+summary(m)
+```
+
+## Bandwidth Selection
+
+```{r rdd-bandwidth}
+# MSE-optimal bandwidth (default)
+m_mse <- rdd_flex(y ~ x, data = df, cutoff = 0, bandwidth = "mserd")
+
+# Manual bandwidth
+m_h <- rdd_flex(y ~ x, data = df, cutoff = 0, bandwidth = 0.3)
+```
+
+## Kernel Choices
+
+```{r rdd-kernel}
+m_tri  <- rdd_flex(y ~ x, data = df, cutoff = 0, kernel = "triangular")
+m_epa  <- rdd_flex(y ~ x, data = df, cutoff = 0, kernel = "epanechnikov")
+m_uni  <- rdd_flex(y ~ x, data = df, cutoff = 0, kernel = "uniform")
+```
+
+## Higher-Order Polynomials
+
+```{r rdd-poly}
+m_p2 <- rdd_flex(y ~ x, data = df, cutoff = 0, polynomial = 2)
+summary(m_p2)
+```
+
+## Diagnostic Tests
+
+```{r rdd-diag}
+# McCrary density test (no manipulation)
+rdd_manipulation_test(df$x, cutoff = 0)
+
+# Covariate balance test
+df$cov <- rnorm(n)
+rdd_balance_test(cov ~ x, data = df, cutoff = 0)
+
+# Placebo cutoffs
+rdd_placebo_cutoffs(y ~ x, data = df, cutoff = 0,
+                    placebo_cutoffs = c(-0.5, -0.25, 0.25, 0.5))
+```
+
+## Plot
+
+```{r rdd-plot}
+plot(m)
+```
+
+## LaTeX Output
+
+```{r rdd-latex}
+to_latex(m)
+```

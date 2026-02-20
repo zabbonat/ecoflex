@@ -1,0 +1,93 @@
+---
+title: "IV and GMM Estimation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{IV and GMM Estimation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+`ivgmm_flex()` provides a unified interface for instrumental variable and
+GMM estimation: 2SLS, LIML, Fuller, and several GMM variants.
+
+## Two-Stage Least Squares (2SLS)
+
+```{r iv-2sls}
+library(ecoflex)
+
+set.seed(42)
+n <- 500
+z <- rnorm(n)                      # instrument
+x <- 0.5 * z + rnorm(n)           # endogenous regressor
+y <- 1 + 2 * x + rnorm(n)
+
+df <- data.frame(y = y, x = x, z = z)
+
+m <- ivgmm_flex(y ~ x | z, data = df, method = "2sls")
+summary(m)
+```
+
+## Diagnostic Tests
+
+```{r iv-diag}
+# Weak instrument test (first-stage F statistic)
+m$diagnostics$weak_iv_test
+
+# Sargan-Hansen overidentification test (with multiple instruments)
+set.seed(1)
+z2 <- rnorm(n)
+df2 <- data.frame(y = y, x = x, z = z, z2 = z2)
+m2 <- ivgmm_flex(y ~ x | z + z2, data = df2, method = "2sls")
+m2$diagnostics$sargan_hansen_test
+```
+
+## LIML and Fuller
+
+```{r iv-liml}
+m_liml   <- ivgmm_flex(y ~ x | z, data = df, method = "liml")
+m_fuller <- ivgmm_flex(y ~ x | z, data = df, method = "fuller", fuller_alpha = 1)
+```
+
+## GMM Estimators
+
+```{r iv-gmm}
+# Two-step efficient GMM
+m_gmm2 <- ivgmm_flex(y ~ x | z + z2, data = df2, method = "gmm_twostep")
+
+# Continuously Updated Estimator (CUE)
+m_cue <- ivgmm_flex(y ~ x | z + z2, data = df2, method = "cue")
+```
+
+## Robust and Cluster Standard Errors
+
+```{r iv-vcov}
+m_rob <- ivgmm_flex(y ~ x | z, data = df, method = "2sls", vcov = "robust")
+
+# Cluster SE
+df$group <- rep(1:50, each = 10)
+m_cl <- ivgmm_flex(y ~ x | z, data = df, method = "2sls",
+                   vcov = "cluster", cluster = "group")
+```
+
+## HAC Standard Errors (Time Series)
+
+```{r iv-hac}
+m_hac <- ivgmm_flex(y ~ x | z, data = df, method = "2sls",
+                    vcov = "HAC", HAC_kernel = "bartlett", HAC_bw = "auto")
+```
+
+## LaTeX Output
+
+```{r iv-latex}
+to_latex(m)
+```
