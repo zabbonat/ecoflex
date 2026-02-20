@@ -8,8 +8,8 @@ test_that("rdd_flex sharp produces valid output", {
   m <- rdd_flex(y ~ x, data = df, cutoff = 0, type = "sharp")
   expect_s3_class(m, "rdd_flex")
   expect_s3_class(m, "ecoflex")
-  est <- coef(m)["RDD_effect"]
-  expect_true(abs(est - 2) < 2.0)
+  expect_true(!is.na(m$tau))
+  expect_true(abs(m$tau - 2) < 1.5)
 })
 
 test_that("rdd_manipulation_test works", {

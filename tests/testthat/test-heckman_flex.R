@@ -21,7 +21,7 @@ test_that("heckman_flex summary works", {
   s  <- as.integer(0.4 * x1 + 0.4 * z + rnorm(n) > 0)
   y  <- ifelse(s == 1, 0.5 + 1.5 * x1 + rnorm(n), NA)
   df <- data.frame(y = y, s = s, x1 = x1, z = z)
-  m  <- heckman_flex(y | s ~ x1 | x1 + z, data = df, method = "twostep")
+  m <- heckman_flex(y | s ~ x1 | x1 + z, data = df, method = "twostep")
   s2 <- summary(m)
   expect_true(!is.null(s2))
 })

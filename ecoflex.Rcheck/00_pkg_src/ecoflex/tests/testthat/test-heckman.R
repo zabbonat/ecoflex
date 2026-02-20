@@ -6,7 +6,7 @@ test_that("heckman_flex twostep produces valid output", {
   wage <- ifelse(sel == 1, 10 + 2*x + rnorm(n), NA)
   df <- data.frame(wage = ifelse(is.na(wage), 0, wage), sel = sel, x = x, kids = kids)
 
-  m <- heckman_flex(wage | sel ~ x | x + kids, data = df, method = "twostep")
+  m <- heckman_flex(wage ~ x | sel ~ x + kids, data = df, method = "twostep")
   expect_s3_class(m, "heckman_flex")
   expect_s3_class(m, "ecoflex")
   expect_true(length(coef(m)) > 0)
@@ -21,7 +21,7 @@ test_that("heckman_flex ML normal works", {
   wage <- ifelse(sel == 1, 10 + 2*x + rnorm(n), 0)
   df <- data.frame(wage = wage, sel = sel, x = x, kids = kids)
 
-  m <- heckman_flex(wage | sel ~ x | x + kids, data = df, method = "twostep")
+  m <- heckman_flex(wage ~ x | sel ~ x + kids, data = df, method = "ml")
   expect_s3_class(m, "heckman_flex")
   expect_true(!is.null(m$sigma))
   expect_true(!is.null(m$rho))
@@ -35,7 +35,7 @@ test_that("heckman_flex semiparametric works", {
   wage <- ifelse(sel == 1, 5 + x + rnorm(n), 0)
   df <- data.frame(wage = wage, sel = sel, x = x, z = z)
 
-  m <- heckman_flex(wage | sel ~ x | x + z, data = df, method = "twostep")
+  m <- heckman_flex(wage ~ x | sel ~ x + z, data = df, method = "semipar")
   expect_s3_class(m, "heckman_flex")
   expect_true(!is.null(m$poly_order))
 })
@@ -48,7 +48,7 @@ test_that("predict works for heckman_flex", {
   wage <- ifelse(sel == 1, 5 + x + rnorm(n), 0)
   df <- data.frame(wage = wage, sel = sel, x = x, z = z)
 
-  m <- heckman_flex(wage | sel ~ x | x + z, data = df, method = "twostep")
+  m <- heckman_flex(wage ~ x | sel ~ x + z, data = df, method = "twostep")
   p <- predict(m, type = "response")
   expect_true(length(p) == n)
 })

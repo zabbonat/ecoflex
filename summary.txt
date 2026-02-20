@@ -1,0 +1,10 @@
+All sourced OK
+ERROR: invalid type (NULL) for variable 'y_selection' 
+========== RESULTS ==========
+  tobit                : PASS
+  iv                   : PASS
+  rdd                  : PASS
+  hurdle               : PASS
+  heckman              : FAIL
+  switching            : PASS
+  latex_summary        : PASS

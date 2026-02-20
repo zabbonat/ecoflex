@@ -1,0 +1,122 @@
+Rscript.exe : Warning 
+messages:
+In riga:1 car:1
++ & 'C:\Program Files\
+R\R-4.5.1\bin\Rscript.
+exe' 'c:/Users/Dilet/D
+eskto ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Warning me   
+ ssages::String) [    
+], RemoteExceptio    n
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+1: package 'Formula' 
+was built under R 
+version 4.5.2 
+2: package 'sandwich' 
+was built under R 
+version 4.5.2 
+3: package 'numDeriv' 
+was built under R 
+version 4.5.2 
+All sourced OK
+
+--- Tobit Type I ---
+OK! Coefficients:
+(Intercept)          hp          wt             
+40.57008092 -0.04051216 -4.75643238  0.81410883 
+Summary:
+
+ Tobit Type 1 Model (ml, errors: normal) 
+============================================================ 
+Call:
+tobit_flex(formula = mpg ~ hp + wt, data = mtcars, tobit_type = 1, 
+    left = 15)
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) 40.57008    1.85051  21.924  < 2e-16 ***
+hp          -0.04051    0.01071  -3.784 0.000154 ***
+wt          -4.75643    0.79864  -5.956 2.59e-09 ***
+             0.81411    0.13735   5.927 3.08e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Log-Likelihood: -58.84 
+AIC: 125.7  BIC: 131.5 
+N: 32 
+------------------------------------------------------------ 
+
+--- IV/2SLS ---
+OK! Coefficients:
+(Intercept)           x 
+   1.029886    1.985005 
+Weak IV F: NA 98.39639 
+
+--- RDD ---
+OK! tau = 3.488525 se = 0.1898431 
+
+--- Hurdle (warpbreaks) ---
+OK! Coefficients:
+binary_(Intercept)       binary_woolB    binary_tensionM    binary_tensionH 
+      2.656607e+01       1.349397e-08       1.372539e-08       1.372539e-08 
+ count_(Intercept)        count_woolB     count_tensionM     count_tensionH 
+      3.691963e+00      -2.059884e-01      -3.213204e-01      -5.184885e-01 
+Warning message:
+In value[[3L]](cond) 
+: Hessian inversion 
+failed; using 
+generalised inverse.
+
+--- Heckman (twostep) ---
+ERROR: invalid type (NULL) for variable 'y_selection' 
+
+--- Switching (exogenous, mtcars) ---
+OK! Coefficients:
+regime0_(Intercept)          regime0_hp          regime0_wt   regime0_log_sigma 
+        30.70392721         -0.04094406         -1.85591121          0.67318424 
+regime1_(Intercept)          regime1_hp          regime1_wt   regime1_log_sigma 
+        44.44393104         -0.01315049         -7.62485850          1.00346906 
+
+--- summary(m, latex=TRUE) for last model ---
+\begin{table}[htbp]
+\centering
+\begin{threeparttable}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lcc}
+\toprule
+   & Regime 0 & Regime 1 \\
+\midrule
+  (Intercept) & $30.7039^{***}$ & $44.4439^{***}$ \\
+  & (2.2940) & (3.8992) \\
+  hp & $-0.0409^{***}$ & $-0.0132$ \\
+  & (0.0117) & (0.0161) \\
+  wt & $-1.8559^{*}$ & $-7.6249^{***}$ \\
+  & (0.8104) & (2.2000) \\
+  log\_sigma & 0.6732 & 1.0035 \\
+  &  &  \\
+\midrule
+  Observations & \multicolumn{2}{c}{32} \\
+  Log-Likelihood & \multicolumn{2}{c}{-68.24} \\
+  AIC & \multicolumn{2}{c}{152.48} \\
+  BIC & \multicolumn{2}{c}{164.21} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}[flushleft]
+\small
+\item $^{***}$p$<$0.001; $^{**}$p$<$0.01; $^{*}$p$<$0.05
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+LaTeX OK!
+
+=== ALL DONE ===

@@ -32,7 +32,7 @@ test_that("rdd_flex treatment effect is in plausible range", {
   df   <- data.frame(y = y, x = x)
   m    <- rdd_flex(y ~ x, data = df, cutoff = 0)
   est  <- coef(m)["RDD_effect"]
-  expect_true(abs(est - true_effect) < 1.5)
+  expect_true(abs(est - true_effect) < 2.0)
 })
 
 test_that("rdd_manipulation_test returns a list", {

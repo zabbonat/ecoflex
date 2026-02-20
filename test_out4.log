@@ -1,0 +1,250 @@
+Rscript.exe : Warning 
+messages:
+In riga:1 car:1
++ & 'C:\Program Files\
+R\R-4.5.1\bin\Rscript.
+exe' 'c:/Users/Dilet/D
+eskto ...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Warning me   
+ ssages::String) [    
+], RemoteExceptio    n
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+1: package 'Formula' 
+was built under R 
+version 4.5.2 
+2: package 'sandwich' 
+was built under R 
+version 4.5.2 
+3: package 'numDeriv' 
+was built under R 
+version 4.5.2 
+All sourced OK
+
+=== TEST 1: Tobit Type I (mtcars, mpg censored at 15) ===
+Coefficients:
+(Intercept)          hp          wt             
+40.57008092 -0.04051216 -4.75643238  0.81410883 
+
+Summary:
+
+ Tobit Type 1 Model (ml, errors: normal) 
+============================================================ 
+Call:
+tobit_flex(formula = mpg ~ hp + wt, data = mtcars, tobit_type = 1, 
+    left = 15)
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) 40.57008    1.85051  21.924  < 2e-16 ***
+hp          -0.04051    0.01071  -3.784 0.000154 ***
+wt          -4.75643    0.79864  -5.956 2.59e-09 ***
+             0.81411    0.13735   5.927 3.08e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Log-Likelihood: -58.84 
+AIC: 125.7  BIC: 131.5 
+N: 32 
+------------------------------------------------------------ 
+
+=== TEST 2: IV/2SLS (simulated) ===
+Coefficients:
+(Intercept)           x 
+   1.029886    1.985005 
+Weak IV F: NA 98.39639 
+Sargan p: 0.7355812 
+
+Summary:
+
+ IV/GMM Estimation (2sls) 
+============================================================ 
+Call:
+ivgmm_flex(formula = y ~ x | z1 + z2, data = df, method = "2sls")
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  1.02989    0.04519   22.79   <2e-16 ***
+x            1.98500    0.07401   26.82   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Log-Likelihood: -711 
+AIC: 7.071  BIC: 15.5 
+N: 500 
+------------------------------------------------------------ 
+
+=== TEST 3: Sharp RDD (simulated) ===
+tau = 3.488525 
+se = 0.1898431 
+
+Summary:
+
+ RDD (sharp, p=1/1, kernel=triangular) 
+============================================================ 
+Call:
+rdd_flex(formula = y ~ x, data = df, cutoff = 0, type = "sharp")
+
+Coefficients:
+    Estimate Std. Error z value Pr(>|z|)    
+tau   3.4885     0.1898   18.38   <2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+N: 1000 
+------------------------------------------------------------ 
+
+=== TEST 4: Hurdle (warpbreaks) ===
+Coefficients:
+binary_(Intercept)       binary_woolB    binary_tensionM    binary_tensionH 
+      2.656607e+01       1.349397e-08       1.372539e-08       1.372539e-08 
+ count_(Intercept)        count_woolB     count_tensionM     count_tensionH 
+      3.691963e+00      -2.059884e-01      -3.213204e-01      -5.184885e-01 
+
+Summary:
+
+ Hurdle Model (threshold = 0, dist = poisson) 
+============================================================ 
+Call:
+hurdle_flex(formula = breaks ~ wool + tension, data = warpbreaks, 
+    threshold = 0, dist = "poisson")
+
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+binary_(Intercept)  2.657e+01  0.000e+00     Inf  < 2e-16 ***
+binary_woolB        1.349e-08  0.000e+00     Inf  < 2e-16 ***
+binary_tensionM     1.373e-08  0.000e+00     Inf  < 2e-16 ***
+binary_tensionH     1.373e-08  0.000e+00     Inf  < 2e-16 ***
+count_(Intercept)   3.692e+00  4.541e-02  81.299  < 2e-16 ***
+count_woolB        -2.060e-01  5.157e-02  -3.994 6.49e-05 ***
+count_tensionM     -3.213e-01  6.026e-02  -5.332 9.72e-08 ***
+count_tensionH     -5.185e-01  6.396e-02  -8.107 5.21e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Log-Likelihood: -242.5 
+AIC: 501.1  BIC: 517 
+N: 54 
+------------------------------------------------------------ 
+Warning message:
+In value[[3L]](cond) 
+: Hessian inversion 
+failed; using 
+generalised inverse.
+
+=== TEST 5: Heckman (twostep, simulated) ===
+Coefficients:
+  outcome_(Intercept)            outcome_x1            outcome_x2 
+            0.9297733             2.0448106             0.4897000 
+     rho_sigma.lambda selection_(Intercept)          selection_x1 
+            0.1079304             0.5056483             0.3005316 
+          selection_z 
+            0.4953923 
+
+Summary:
+
+ Heckman Selection Model (twostep, normal) 
+============================================================ 
+Call:
+heckman_flex(formula = y | s ~ x1 + x2 | x1 + z, data = df, method = "twostep")
+
+Coefficients:
+                      Estimate Std. Error z value Pr(>|z|)    
+outcome_(Intercept)    0.92977    0.09081  10.239  < 2e-16 ***
+outcome_x1             2.04481    0.04488  45.566  < 2e-16 ***
+outcome_x2             0.48970    0.03961  12.364  < 2e-16 ***
+rho_sigma.lambda       0.10793    0.16811   0.642    0.521    
+selection_(Intercept)  0.50565    0.04453  11.356  < 2e-16 ***
+selection_x1           0.30053    0.04481   6.706 1.99e-11 ***
+selection_z            0.49539    0.04638  10.682  < 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Log-Likelihood: -1502 
+AIC: 3019  BIC: 3053 
+N: 1000 
+------------------------------------------------------------ 
+
+=== TEST 6: Switching (exogenous, mtcars) ===
+Coefficients:
+regime0_(Intercept)          regime0_hp          regime0_wt   regime0_log_sigma 
+        30.70392721         -0.04094406         -1.85591121          0.67318424 
+regime1_(Intercept)          regime1_hp          regime1_wt   regime1_log_sigma 
+        44.44393104         -0.01315049         -7.62485850          1.00346906 
+
+Summary:
+
+ Switching Regression (exogenous, 2 regimes) 
+============================================================ 
+Call:
+switching_flex(formula = mpg ~ hp + wt, data = mtcars, type = "exogenous", 
+    regime_var = "am")
+
+Coefficients:
+                    Estimate Std. Error z value Pr(>|z|)    
+regime0_(Intercept) 30.70393    2.29396  13.385  < 2e-16 ***
+regime0_hp          -0.04094    0.01169  -3.503 0.000459 ***
+regime0_wt          -1.85591    0.81043  -2.290 0.022020 *  
+regime0_log_sigma    0.67318         NA      NA       NA    
+regime1_(Intercept) 44.44393    3.89917  11.398  < 2e-16 ***
+regime1_hp          -0.01315    0.01615  -0.814 0.415398    
+regime1_wt          -7.62486    2.19997  -3.466 0.000528 ***
+regime1_log_sigma    1.00347         NA      NA       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Log-Likelihood: -68.24 
+AIC: 152.5  BIC: 164.2 
+N: 32 
+------------------------------------------------------------ 
+
+=== TEST 7: summary(m, latex=TRUE) ===
+\begin{table}[htbp]
+\centering
+\begin{threeparttable}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lcc}
+\toprule
+   & Regime 0 & Regime 1 \\
+\midrule
+  (Intercept) & $30.7039^{***}$ & $44.4439^{***}$ \\
+  & (2.2940) & (3.8992) \\
+  hp & $-0.0409^{***}$ & $-0.0132$ \\
+  & (0.0117) & (0.0161) \\
+  wt & $-1.8559^{*}$ & $-7.6249^{***}$ \\
+  & (0.8104) & (2.2000) \\
+  log\_sigma & 0.6732 & 1.0035 \\
+  &  &  \\
+\midrule
+  Observations & \multicolumn{2}{c}{32} \\
+  Log-Likelihood & \multicolumn{2}{c}{-68.24} \\
+  AIC & \multicolumn{2}{c}{152.48} \\
+  BIC & \multicolumn{2}{c}{164.21} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\begin{tablenotes}[flushleft]
+\small
+\item $^{***}$p$<$0.001; $^{**}$p$<$0.01; $^{*}$p$<$0.05
+\end{tablenotes}
+\end{threeparttable}
+\end{table} 
+
+
+========== RESULTS ==========
+  tobit                : PASS
+  iv                   : PASS
+  rdd                  : PASS
+  hurdle               : PASS
+  heckman              : PASS
+  switching            : PASS
+  latex_summary        : PASS
+=============================
+Output written to c:/Users/Dilet/Desktop/Milano/Novelty/Causality/aRRpackage/test_results.txt 

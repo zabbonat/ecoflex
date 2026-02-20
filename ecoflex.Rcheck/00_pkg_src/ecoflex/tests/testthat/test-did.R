@@ -6,7 +6,7 @@ test_that("did_flex TWFE works", {
   panel$y <- 1 + 0.5 * panel$time + 2 * panel$treated + rnorm(nrow(panel))
 
   m <- did_flex(y ~ 1, data = panel, id_var = "id", time_var = "time",
-                 treat_var = "treated", estimator = "twfe")
+                treat_var = "treated", estimator = "twfe")
   expect_s3_class(m, "did_flex")
   expect_true(!is.na(m$att))
 })
@@ -21,8 +21,8 @@ test_that("did_flex Callaway-Sant'Anna works", {
   panel$y <- 1 + 0.3 * panel$time + 1.5 * panel$treated + rnorm(nrow(panel))
 
   m <- did_flex(y ~ 1, data = panel, id_var = "id", time_var = "time",
-                 treat_var = "treated", cohort_var = "cohort",
-                 estimator = "callaway_santanna")
+                treat_var = "treated", cohort_var = "cohort",
+                estimator = "callaway_santanna")
   expect_s3_class(m, "did_flex")
 })
 

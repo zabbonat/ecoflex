@@ -108,7 +108,7 @@ rdd_flex <- function(formula, data, cutoff = 0,
       n = length(y), n_left = n_left, n_right = n_right,
       model_data = data,
       model_name = sprintf("RDD (%s, p=%d/%d, kernel=%s)", type, p_left, p_right, kernel),
-      coefficients = c(RDD_effect = result$tau),
+      coefficients = c(tau = result$tau),
       se = c(tau = result$se_tau),
       z = c(tau = result$tau / result$se_tau),
       pvalue = c(tau = 2 * pnorm(-abs(result$tau / result$se_tau)))
