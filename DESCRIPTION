@@ -8,7 +8,7 @@ Description: Implements econometric models for applied microeconomics and
     Heckman selection models, regression discontinuity designs, IV/GMM
     estimation, difference-in-differences for staggered adoption, Tobit
     types I-V, nonlinear panel models, and switching regressions.
-License: MIT
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
