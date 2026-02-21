@@ -4,5 +4,6 @@ bibentry(
   author   = person("Diletta", "Abbonato"),
   year     = "2026",
   note     = "R package version 0.1.0",
-  url      = "https://github.com/zabbonat/ecoflex"
+  doi      = "10.5281/zenodo.18726830",
+  url      = "https://doi.org/10.5281/zenodo.18726830"
 )

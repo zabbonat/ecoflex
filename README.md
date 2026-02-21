@@ -1,6 +1,7 @@
 # ecoflex <img src="man/figures/logo.png" align="right" height="139" />
 
 [![R-CMD-check](https://github.com/zabbonat/ecoflex/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main1)](https://github.com/zabbonat/ecoflex/actions/workflows/R-CMD-check.yaml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18726830.svg)](https://doi.org/10.5281/zenodo.18726830)
 
 **ecoflex** provides a unified, flexible R interface for advanced
 econometric models commonly used in applied microeconomics and causal
@@ -331,6 +332,24 @@ All ecoflex objects support:
 
 ---
 
+## Citation
+
+If you use **ecoflex** in your research, please cite it as:
+
+> Abbonato, D. (2026). ecoflex: Flexible Econometric Models (v0.1.0). Zenodo. https://doi.org/10.5281/zenodo.18726830
+
+BibTeX:
+```bibtex
+@manual{abbonato2026ecoflex,
+  title = {ecoflex: Flexible Econometric Models},
+  author = {Abbonato, Diletta},
+  year = {2026},
+  note = {R package version 0.1.0},
+  doi = {10.5281/zenodo.18726830},
+  url = {https://doi.org/10.5281/zenodo.18726830}
+}
+```
+
 ## License
 
-MIT
+MIT © ecoflex authors

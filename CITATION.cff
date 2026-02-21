@@ -8,6 +8,7 @@ authors:
     affiliation: University of Turin
 version: 0.1.0
 date-released: "2026-02-21"
+doi: "10.5281/zenodo.18726830"
 url: "https://github.com/zabbonat/ecoflex"
 repository-code: "https://github.com/zabbonat/ecoflex"
 license: MIT
