@@ -352,4 +352,4 @@ BibTeX:
 
 ## License
 
-MIT © ecoflex authors
+MIT ©
