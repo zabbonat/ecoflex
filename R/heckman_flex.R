@@ -82,26 +82,25 @@ heckman_flex <- function(formula, data,
 #' @keywords internal
 .heckman_parse_formula <- function(F, data) {
   # Formula: y | s ~ outcome_vars | selection_vars (2 parts LHS, 2 parts RHS)
-  # BUT gracefully handle if user provides y ~ X1 | s ~ Z1 (older style)
-  
+
   if (length(F)[1] == 1) {
-    # Only 1 LHS part: y ~ X | s ~ Z
-    # In this case Formula(y ~ X | s ~ Z) sees 'y' as lhs=1, 
-    # but the RHS has 2 parts: 'X' and 's ~ Z'. This is likely NOT what was intended.
-    # We want LHS1=y, LHS2=s, RHS1=X, RHS2=Z
     stop("Formula must be in the format: outcome | selection ~ outcome_covariates | selection_covariates")
   }
-  
+
   # Standard 2-part LHS, 2-part RHS
-  mf1 <- model.frame(F, data = data, lhs = 1, rhs = 1)
+  # Use na.pass so NAs in outcome (expected for non-selected obs) are preserved
+  mf1 <- model.frame(F, data = data, lhs = 1, rhs = 1, na.action = na.pass)
   y_full <- model.response(mf1)
   X_outcome <- model.matrix(F, data = data, lhs = 1, rhs = 1)
-  mf2 <- model.frame(F, data = data, lhs = 2, rhs = 2)
+  mf2 <- model.frame(F, data = data, lhs = 2, rhs = 2, na.action = na.pass)
   y_selection <- model.response(mf2)
   X_selection <- model.matrix(F, data = data, lhs = 2, rhs = 2)
   if (!all(y_selection %in% c(0, 1))) stop("Selection variable must be binary (0/1)")
+
+  # y_outcome: use original values, NA where not selected
   y_outcome <- y_full
   y_outcome[y_selection == 0] <- NA
+
   list(y_outcome = y_outcome, y_selection = y_selection,
        X_outcome = X_outcome, X_selection = X_selection)
 }

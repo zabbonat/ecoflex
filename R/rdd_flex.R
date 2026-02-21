@@ -262,7 +262,7 @@ rdd_balance_test <- function(formula, data, cutoff = 0, covariates, ...) {
 rdd_placebo_cutoffs <- function(formula, data, cutoff = 0, placebo_cutoffs = NULL, ...) {
   F <- Formula::Formula(formula)
   mf <- model.frame(F, data = data)
-  x <- model.matrix(F, data = data, rhs = 1)[, -1][, 1]
+  x <- model.matrix(F, data = data, rhs = 1)[, -1, drop = FALSE][, 1]
   if (is.null(placebo_cutoffs)) {
     q <- quantile(x, probs = c(0.25, 0.5, 0.75))
     placebo_cutoffs <- q[q != cutoff]
@@ -289,7 +289,7 @@ plot.rdd_flex <- function(x, ...) {
   F <- x$formula
   mf <- model.frame(F, data = data)
   y <- model.response(mf)
-  rv <- model.matrix(F, data = data, rhs = 1)[, -1][, 1]
+  rv <- model.matrix(F, data = data, rhs = 1)[, -1, drop = FALSE][, 1]
   df_plot <- data.frame(y = y, x = rv, treat = as.factor(as.integer(rv >= x$cutoff)))
 
   ggplot2::ggplot(df_plot, ggplot2::aes(x = .data$x, y = .data$y, color = .data$treat)) +

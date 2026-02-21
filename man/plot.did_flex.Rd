@@ -6,6 +6,20 @@
 \usage{
 \method{plot}{did_flex}(x, type = "event_study", ci_level = 0.95, reference_period = -1, ...)
 }
+\arguments{
+\item{x}{A \code{did_flex} object.}
+
+\item{type}{Plot type. Default: \code{"event_study"}.}
+
+\item{ci_level}{Confidence level for intervals. Default: 0.95.}
+
+\item{reference_period}{Reference period for vertical line. Default: -1.}
+
+\item{...}{Additional arguments (currently unused).}
+}
+\value{
+A ggplot2 object (returned invisibly).
+}
 \description{
 Event Study Plot for DiD
 }

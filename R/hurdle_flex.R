@@ -19,6 +19,7 @@
 #' @param method Estimation method: \code{"ml"} (joint maximum likelihood),
 #'   \code{"two-step"}. Default: \code{"ml"}.
 #' @param start Optional starting values.
+#' @param latex If \code{TRUE}, prints a LaTeX table. Default: \code{FALSE}.
 #' @param ... Additional arguments passed to the optimiser.
 #'
 #' @return An object of class \code{c("hurdle_flex", "ecoflex")} with

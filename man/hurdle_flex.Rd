@@ -35,6 +35,8 @@ If only one part is specified, it is used for both components.}
 
 \item{start}{Optional starting values.}
 
+\item{latex}{If \code{TRUE}, prints a LaTeX table. Default: \code{FALSE}.}
+
 \item{...}{Additional arguments passed to the optimiser.}
 }
 \value{

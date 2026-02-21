@@ -5,3 +5,11 @@
 .DS_Store
 docs/
 inst/doc
+*.Rcheck/
+*.tar.gz
+build_log.txt
+check_log.txt
+summary.txt
+full_test_output.txt
+test_output.txt
+test_out*.log

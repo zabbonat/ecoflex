@@ -110,12 +110,14 @@ ivgmm_flex <- function(formula, data,
 #' @keywords internal
 .estimate_2sls <- function(y, X, Z) {
   n <- length(y); k <- ncol(X)
-  Pz <- Z %*% solve(crossprod(Z)) %*% t(Z)
-  beta <- solve(t(X) %*% Pz %*% X) %*% t(X) %*% Pz %*% y
+  ZtZ_inv <- tryCatch(solve(crossprod(Z)), error = function(e) MASS::ginv(crossprod(Z)))
+  Pz <- Z %*% ZtZ_inv %*% t(Z)
+  XtPzX_inv <- tryCatch(solve(t(X) %*% Pz %*% X), error = function(e) MASS::ginv(t(X) %*% Pz %*% X))
+  beta <- XtPzX_inv %*% t(X) %*% Pz %*% y
   beta <- as.numeric(beta)
   resid <- as.numeric(y - X %*% beta)
   sigma2 <- sum(resid^2) / (n - k)
-  V <- sigma2 * solve(t(X) %*% Pz %*% X)
+  V <- sigma2 * XtPzX_inv
   list(coefficients = beta, residuals = resid, fitted = as.numeric(X %*% beta),
        vcov_classical = V, Pz = Pz)
 }
@@ -314,20 +316,26 @@ ivgmm_flex <- function(formula, data,
 
 #' @keywords internal
 .durbin_wu_hausman <- function(y, X, Z) {
-  n <- length(y); k <- ncol(X)
-  # OLS
-  beta_ols <- solve(crossprod(X)) %*% crossprod(X, y)
-  # 2SLS
-  Pz <- Z %*% solve(crossprod(Z)) %*% t(Z)
-  beta_iv <- solve(t(X) %*% Pz %*% X) %*% t(X) %*% Pz %*% y
-  diff <- beta_iv - beta_ols
-  e_iv <- as.numeric(y - X %*% beta_iv)
-  sigma2 <- sum(e_iv^2) / (n - k)
-  V_diff <- sigma2 * (solve(t(X) %*% Pz %*% X) - solve(crossprod(X)))
-  V_diff <- tryCatch(V_diff, error = function(e) diag(k) * sigma2)
-  chi2 <- tryCatch(as.numeric(t(diff) %*% solve(V_diff) %*% diff),
-                   error = function(e) NA)
-  list(statistic = chi2, df = k, p.value = if (!is.na(chi2)) 1 - pchisq(chi2, k) else NA)
+  tryCatch({
+    n <- length(y); k <- ncol(X)
+    # OLS
+    XtX_inv <- solve(crossprod(X))
+    beta_ols <- XtX_inv %*% crossprod(X, y)
+    # 2SLS
+    ZtZ_inv <- tryCatch(solve(crossprod(Z)), error = function(e) MASS::ginv(crossprod(Z)))
+    Pz <- Z %*% ZtZ_inv %*% t(Z)
+    XtPzX_inv <- tryCatch(solve(t(X) %*% Pz %*% X), error = function(e) MASS::ginv(t(X) %*% Pz %*% X))
+    beta_iv <- XtPzX_inv %*% t(X) %*% Pz %*% y
+    diff <- beta_iv - beta_ols
+    e_iv <- as.numeric(y - X %*% beta_iv)
+    sigma2 <- sum(e_iv^2) / (n - k)
+    V_diff <- sigma2 * (XtPzX_inv - XtX_inv)
+    chi2 <- tryCatch(as.numeric(t(diff) %*% solve(V_diff) %*% diff),
+                     error = function(e) NA)
+    list(statistic = chi2, df = k, p.value = if (!is.na(chi2)) 1 - pchisq(chi2, k) else NA)
+  }, error = function(e) {
+    list(statistic = NA, df = ncol(X), p.value = NA)
+  })
 }
 
 #' @keywords internal

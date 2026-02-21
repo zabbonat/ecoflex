@@ -1,4 +1,4 @@
-url: https://github.com/zabbonat/ecoflex
+url: https://zabbonat.github.io/ecoflex
 template:
   bootstrap: 5
   bootswatch: cosmo
@@ -64,3 +64,15 @@ reference:
   desc: Flexible SE computation
   contents:
   - flex_vcov
+
+- title: Output
+  desc: LaTeX tables and reporting
+  contents:
+  - to_latex
+
+- title: Generics
+  desc: S3 methods for ecoflex objects
+  contents:
+  - summary.ecoflex
+  - predict.ecoflex
+  - vcov.ecoflex

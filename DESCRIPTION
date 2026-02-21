@@ -20,7 +20,8 @@ Imports:
     numDeriv,
     maxLik,
     MASS,
-    Matrix
+    Matrix,
+    rlang
 Suggests:
     testthat (>= 3.0.0),
     knitr,

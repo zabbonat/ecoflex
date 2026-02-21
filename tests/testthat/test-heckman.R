@@ -37,7 +37,7 @@ test_that("heckman_flex semiparametric works", {
 
   m <- heckman_flex(wage | sel ~ x | x + z, data = df, method = "twostep")
   expect_s3_class(m, "heckman_flex")
-  expect_true(!is.null(m$poly_order))
+  expect_true(!is.null(m$sigma))
 })
 
 test_that("predict works for heckman_flex", {

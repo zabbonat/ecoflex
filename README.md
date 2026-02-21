@@ -1,6 +1,6 @@
 # ecoflex
 
-[![R-CMD-check](https://github.com/zabbonat/ecoflex/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zabbonat/ecoflex/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/zabbonat/ecoflex/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main1)](https://github.com/zabbonat/ecoflex/actions/workflows/R-CMD-check.yaml)
 
 **ecoflex** provides a unified, flexible R interface for advanced
 econometric models commonly used in applied microeconomics and causal

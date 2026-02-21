@@ -83,7 +83,7 @@ did_flex <- function(formula, data, id_var, time_var, treat_var,
 # --- TWFE ---
 #' @keywords internal
 .did_twfe <- function(formula, data, id_var, time_var, treat_var, cluster) {
-  f_str <- paste(deparse(formula), "+ factor(", id_var, ") + factor(", time_var, ")")
+  f_str <- paste(deparse(formula), "+", treat_var, "+ factor(", id_var, ") + factor(", time_var, ")")
   f_full <- as.formula(f_str)
   fit <- lm(f_full, data = data)
   treat_idx <- grep(treat_var, names(coef(fit)), fixed = TRUE)
@@ -394,6 +394,13 @@ print.did_comparison <- function(x, digits = 4, ...) {
 }
 
 #' Event Study Plot for DiD
+#'
+#' @param x A \code{did_flex} object.
+#' @param type Plot type. Default: \code{"event_study"}.
+#' @param ci_level Confidence level for intervals. Default: 0.95.
+#' @param reference_period Reference period for vertical line. Default: -1.
+#' @param ... Additional arguments (currently unused).
+#' @return A ggplot2 object (returned invisibly).
 #' @export
 plot.did_flex <- function(x, type = "event_study", ci_level = 0.95,
                           reference_period = -1, ...) {

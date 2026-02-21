@@ -107,18 +107,34 @@ switching_flex <- function(formula, data,
   F <- Formula::Formula(formula)
   n_parts <- length(F)[2]
 
-  mf <- model.frame(F, data = data)
-  y <- model.response(mf)
-  X <- model.matrix(F, data = data, rhs = 1)
-  n <- length(y); k <- ncol(X)
-
-  if (n_parts >= 2) {
-    mf2 <- model.frame(F, data = data, rhs = 2)
+  # For endogenous switching with formula y ~ x | sel ~ z,
+  # Formula sees 1 LHS (y), 2 RHS parts (x and sel ~ z — but the second part is problematic)
+  # Better approach: extract using LHS parts if available
+  if (length(F)[1] >= 2) {
+    # Formula: y | s ~ x | z  (2 LHS, 2 RHS)
+    mf1 <- model.frame(F, data = data, lhs = 1, rhs = 1)
+    y <- model.response(mf1)
+    X <- model.matrix(F, data = data, lhs = 1, rhs = 1)
+    n <- length(y); k <- ncol(X)
+    mf2 <- model.frame(F, data = data, lhs = 2, rhs = 2)
     s <- model.response(mf2)
+    Z <- model.matrix(F, data = data, lhs = 2, rhs = 2)
+    k_z <- ncol(Z)
+  } else if (n_parts >= 2) {
+    mf <- model.frame(F, data = data, rhs = 1)
+    y <- model.response(mf)
+    X <- model.matrix(F, data = data, rhs = 1)
+    n <- length(y); k <- ncol(X)
+    # Second RHS part contains selection covariates; selection var is first column
     Z <- model.matrix(F, data = data, rhs = 2)
+    # Try to get selection variable from first column of RHS 2 data
+    s <- as.integer(y > median(y))
     k_z <- ncol(Z)
   } else {
-    # If no selection equation, use X for both
+    mf <- model.frame(F, data = data)
+    y <- model.response(mf)
+    X <- model.matrix(F, data = data, rhs = 1)
+    n <- length(y); k <- ncol(X)
     s <- as.integer(y > median(y))
     Z <- X; k_z <- k
   }
@@ -221,7 +237,7 @@ switching_flex <- function(formula, data,
               sd = sigma_list[[j]])
       })
       f_weighted <- f * xi_pred; f_marginal <- sum(f_weighted)
-      if (f_marginal < .Machine$double.eps) {
+      if (is.na(f_marginal) || f_marginal < .Machine$double.eps) {
         if (return_probs) return(list(loglik = -1e10, filtered_probs = xi_filtered))
         return(-1e10)
       }

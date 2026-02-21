@@ -6,7 +6,7 @@
 \alias{ecoflex-package}
 \title{ecoflex: Flexible Econometric Models for Applied Research}
 \description{
-Provides unified, flexible implementations of econometric models that overcome limitations of existing R packages. Includes hurdle models with arbitrary thresholds, extended Heckman selection models, flexible regression discontinuity designs, unified IV/GMM estimation, robust difference-in-differences for staggered adoption, Tobit types I-V, nonlinear panel models, and endogenous switching regressions.
+Implements econometric models for applied microeconomics and causal inference. Covers hurdle models with arbitrary thresholds, Heckman selection models, regression discontinuity designs, IV/GMM estimation, difference-in-differences for staggered adoption, Tobit types I-V, nonlinear panel models, and switching regressions.
 }
 \author{
 \strong{Maintainer}: Diletta Abbonato \email{diletta.abbonato@unito.it}
