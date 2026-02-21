@@ -6,7 +6,7 @@
 **ecoflex** provides a unified, flexible R interface for advanced
 econometric models commonly used in applied microeconomics and causal
 inference research. Every model supports **flexible standard errors**,
-**LaTeX output**, and a consistent `summary()` / `coef()` / `predict()` API.
+**LaTeX output**, and a consistent `summary()` / `coef()` / `predict()`.
 
 ## Installation
 
