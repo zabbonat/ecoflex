@@ -333,4 +333,4 @@ All ecoflex objects support:
 
 ## License
 
-MIT © ecoflex authors
+MIT
